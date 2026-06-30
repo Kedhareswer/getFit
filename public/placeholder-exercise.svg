@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none" role="img" aria-label="Animation unavailable">
+  <rect width="400" height="300" fill="#131519" />
+  <g transform="translate(200 138)" fill="none" stroke="#363B44" stroke-width="9" stroke-linecap="round">
+    <line x1="-70" y1="0" x2="70" y2="0" />
+    <line x1="-70" y1="-22" x2="-70" y2="22" />
+    <line x1="-52" y1="-32" x2="-52" y2="32" />
+    <line x1="70" y1="-22" x2="70" y2="22" />
+    <line x1="52" y1="-32" x2="52" y2="32" />
+  </g>
+  <text x="200" y="226" text-anchor="middle" fill="#6B7280" font-family="system-ui, sans-serif" font-size="15" font-weight="600">Animation unavailable</text>
+</svg>

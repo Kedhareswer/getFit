@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------- tokens */
+:root,
+[data-theme='dark'] {
+  --bg: 10 11 13;
+  --surface: 19 21 25;
+  --surface-2: 27 30 36;
+  --border: 38 42 49;
+  --border-strong: 54 59 68;
+  --text: 244 246 248;
+  --muted: 156 163 175;
+  --dim: 107 114 128;
+  --primary: 163 230 53; /* energetic lime */
+  --primary-fg: 10 11 13;
+  --secondary: 255 122 69; /* burn / intensity */
+  --success: 52 211 153;
+  --warning: 251 191 36;
+  --danger: 248 113 113;
+  --info: 96 165 250;
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --bg: 247 248 250;
+  --surface: 255 255 255;
+  --surface-2: 241 243 245;
+  --border: 226 230 235;
+  --border-strong: 200 206 214;
+  --text: 14 17 22;
+  --muted: 90 99 112;
+  --dim: 138 147 160;
+  --primary: 132 204 22;
+  --primary-fg: 247 248 250;
+  --secondary: 234 88 12;
+  --success: 16 185 129;
+  --warning: 217 119 6;
+  --danger: 220 38 38;
+  --info: 37 99 235;
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------ base */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg text-text font-sans antialiased;
+    background-image: radial-gradient(60rem 40rem at 85% -10%, rgb(var(--primary) / 0.06), transparent 60%),
+      radial-gradient(50rem 40rem at -10% 10%, rgb(var(--secondary) / 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3 {
+    @apply font-display tracking-tight text-text;
+  }
+  /* Accessible, always-visible focus ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+  /* Numeric inputs: hide spinners for a cleaner look */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  ::selection {
+    background: rgb(var(--primary) / 0.3);
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--border-strong));
+    border-radius: 99px;
+    border: 2px solid rgb(var(--bg));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted) / 0.7); }
+}
+
+/* ------------------------------------------------------------ components */
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border bg-surface shadow-elev-1;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:border-border-strong hover:bg-surface-2 hover:-translate-y-0.5 hover:shadow-elev-2;
+  }
+
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
+      transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary { @apply bg-primary text-primary-fg hover:shadow-glow-primary hover:brightness-105; }
+  .btn-secondary { @apply bg-secondary text-white hover:shadow-glow-secondary hover:brightness-105; }
+  .btn-soft { @apply bg-surface-2 text-text hover:bg-border ring-1 ring-inset ring-border; }
+  .btn-ghost { @apply text-muted hover:bg-surface-2 hover:text-text; }
+  .btn-danger { @apply bg-danger/15 text-danger ring-1 ring-inset ring-danger/30 hover:bg-danger/25; }
+  .btn-sm { @apply px-3 py-1.5 text-xs rounded-lg; }
+  .btn-lg { @apply px-6 py-3.5 text-base rounded-2xl; }
+
+  .icon-btn {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition
+      hover:bg-surface-2 hover:text-text;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm
+      font-medium text-muted transition hover:border-border-strong hover:text-text;
+  }
+  .chip-active {
+    @apply border-primary/50 bg-primary/15 text-primary hover:text-primary;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text
+      placeholder:text-dim transition focus:border-primary/60;
+  }
+  .label { @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted; }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-md bg-surface-2 px-2 py-0.5 text-xs font-medium text-muted;
+  }
+
+  .overline { @apply text-overline font-semibold uppercase text-muted; }
+
+  .stat-tile {
+    @apply card flex flex-col gap-1 p-4;
+  }
+
+  /* loading skeleton with shimmer */
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-surface-2;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(90deg, transparent, rgb(var(--border-strong) / 0.5), transparent);
+    animation: shimmer 1.4s infinite;
+  }
+
+  .page { @apply mx-auto w-full max-w-6xl px-4 pb-24 pt-6 sm:px-6 lg:pb-8; }
+  .section-title { @apply text-lg font-bold text-text sm:text-xl; }
+}
+
+/* --------------------------------------------------- reduced motion guard */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Manual override: when the app sets reduce-motion, freeze GIFs is handled in JS,
+   and we also kill decorative animations app-wide. */
+[data-reduce-motion='true'] * {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+}
