@@ -9,7 +9,7 @@ var PROD_CSP = [
     "script-src 'self'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https://static.exercisedb.dev",
+    "img-src 'self' data: https://cdn.jsdelivr.net",
     "connect-src 'self'",
     "frame-src 'none'",
     "form-action 'self'",

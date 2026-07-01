@@ -23,7 +23,7 @@ export default function MiniBarChart({ data, unit = '', caption }: Props) {
           return (
             <div key={i} className="flex h-full flex-1 flex-col items-center justify-end">
               <div
-                className="w-full rounded-t bg-gradient-to-t from-primary/50 to-primary transition-all duration-300"
+                className="w-full rounded-t-sm bg-primary/85 transition-all duration-500 ease-quint hover:bg-primary"
                 style={{ height: `${d.value > 0 ? Math.max(2, pct) : 0}%` }}
                 title={`${d.label}: ${d.value.toLocaleString()}${unit ? ' ' + unit : ''}`}
               />

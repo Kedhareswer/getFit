@@ -1,16 +1,21 @@
 import type { Exercise } from '../types'
 
-// --- Body regions: group the 10 raw body_part values for filtering & color-coding ---
+// --- Body regions: group raw body_part values for filtering & color-coding ---
 export const REGION_OF: Record<string, string> = {
-  'upper arms': 'Arms',
-  'lower arms': 'Arms',
+  // current dataset (ExerciseGymGifsDB) body parts
+  arms: 'Arms',
   chest: 'Chest',
   back: 'Back',
   shoulders: 'Shoulders',
+  core: 'Core',
+  legs: 'Legs',
+  cardio: 'Cardio',
+  // legacy aliases (kept harmless)
+  'upper arms': 'Arms',
+  'lower arms': 'Arms',
   waist: 'Core',
   'upper legs': 'Legs',
   'lower legs': 'Legs',
-  cardio: 'Cardio',
   neck: 'Cardio',
 }
 
@@ -21,36 +26,28 @@ export function regionOf(bodyPart: string): Region {
   return (REGION_OF[bodyPart] as Region) ?? 'Cardio'
 }
 
-// --- Equipment display groups over the 28 raw equipment values ---
+// --- Equipment display groups over the raw equipment values ---
 const EQUIPMENT_GROUP_OF: Record<string, string> = {
-  'body weight': 'Bodyweight',
-  assisted: 'Bodyweight',
+  // current dataset (ExerciseGymGifsDB)
+  bodyweight: 'Bodyweight',
   dumbbell: 'Free weights',
   barbell: 'Free weights',
-  'ez barbell': 'Free weights',
+  'ez-bar': 'Free weights',
   kettlebell: 'Free weights',
-  weighted: 'Free weights',
-  'olympic barbell': 'Free weights',
-  'trap bar': 'Free weights',
-  hammer: 'Free weights',
   cable: 'Cable & Machine',
+  lever: 'Cable & Machine',
+  smith: 'Cable & Machine',
+  sled: 'Cable & Machine',
+  machine: 'Cable & Machine',
+  band: 'Bands',
+  other: 'Other',
+  // legacy aliases (kept harmless)
+  'body weight': 'Bodyweight',
+  assisted: 'Bodyweight',
+  'ez barbell': 'Free weights',
   'leverage machine': 'Cable & Machine',
   'smith machine': 'Cable & Machine',
-  'sled machine': 'Cable & Machine',
-  'upper body ergometer': 'Cable & Machine',
-  skierg: 'Cable & Machine',
-  'elliptical machine': 'Cable & Machine',
-  'stepmill machine': 'Cable & Machine',
-  'stationary bike': 'Cable & Machine',
-  band: 'Bands',
   'resistance band': 'Bands',
-  'stability ball': 'Functional & Ball',
-  'medicine ball': 'Functional & Ball',
-  'bosu ball': 'Functional & Ball',
-  roller: 'Functional & Ball',
-  'wheel roller': 'Functional & Ball',
-  rope: 'Functional & Ball',
-  tire: 'Functional & Ball',
 }
 
 export const EQUIPMENT_GROUPS = [
@@ -76,14 +73,14 @@ export interface StarterTemplate {
 }
 
 export const STARTER_WORKOUTS: StarterTemplate[] = [
-  { name: 'Full-Body Bodyweight Kickstart', goal: 'Beginner conditioning, zero equipment', bodyParts: ['chest', 'back', 'upper legs', 'waist', 'shoulders'], exerciseCount: 8, equipment: 'body weight' },
-  { name: 'Push Day · Chest / Shoulders / Triceps', goal: 'Hypertrophy for pressing muscles', bodyParts: ['chest', 'shoulders', 'upper arms'], exerciseCount: 7 },
-  { name: 'Pull Day · Back / Biceps', goal: 'Back width and arm size', bodyParts: ['back', 'upper arms'], exerciseCount: 7 },
-  { name: 'Leg Day · Quads / Hams / Calves', goal: 'Lower-body strength and mass', bodyParts: ['upper legs', 'lower legs'], exerciseCount: 7 },
-  { name: 'Core & Abs Crusher', goal: 'Midsection definition and stability', bodyParts: ['waist'], exerciseCount: 6 },
-  { name: 'Dumbbell-Only Full Body', goal: 'Complete session with just dumbbells', bodyParts: ['chest', 'back', 'shoulders', 'upper legs', 'upper arms'], exerciseCount: 8, equipment: 'dumbbell' },
-  { name: 'Arm Day · Biceps / Triceps / Forearms', goal: 'Dedicated arm pump', bodyParts: ['upper arms', 'lower arms'], exerciseCount: 6 },
-  { name: 'Quick Cardio & Glutes Burn', goal: 'Conditioning + glute activation', bodyParts: ['cardio', 'upper legs'], exerciseCount: 6 },
+  { name: 'Full-Body Bodyweight Kickstart', goal: 'Beginner conditioning, zero equipment', bodyParts: ['chest', 'back', 'legs', 'core', 'shoulders'], exerciseCount: 8, equipment: 'bodyweight' },
+  { name: 'Push Day · Chest / Shoulders / Triceps', goal: 'Hypertrophy for pressing muscles', bodyParts: ['chest', 'shoulders', 'arms'], exerciseCount: 7 },
+  { name: 'Pull Day · Back / Biceps', goal: 'Back width and arm size', bodyParts: ['back', 'arms'], exerciseCount: 7 },
+  { name: 'Leg Day · Quads / Hams / Calves', goal: 'Lower-body strength and mass', bodyParts: ['legs'], exerciseCount: 7 },
+  { name: 'Core & Abs Crusher', goal: 'Midsection definition and stability', bodyParts: ['core'], exerciseCount: 6 },
+  { name: 'Dumbbell-Only Full Body', goal: 'Complete session with just dumbbells', bodyParts: ['chest', 'back', 'shoulders', 'legs', 'arms'], exerciseCount: 8, equipment: 'dumbbell' },
+  { name: 'Arm Day · Biceps / Triceps / Forearms', goal: 'Dedicated arm pump', bodyParts: ['arms'], exerciseCount: 6 },
+  { name: 'Quick Cardio & Glutes Burn', goal: 'Conditioning + glute activation', bodyParts: ['cardio', 'legs'], exerciseCount: 6 },
 ]
 
 /**

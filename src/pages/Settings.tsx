@@ -16,6 +16,7 @@ import type { Settings as SettingsType, SessionLog } from '../types'
 import { useStore, sanitizeWorkouts } from '../state/store'
 import { LANGS, LANG_NAMES } from '../lib/data'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
+import { useReveal } from '../lib/anim'
 
 // security: bound imported arrays so a hostile/oversized file can't blow up memory.
 const IMPORT_LIMITS = { workouts: 200, history: 500, favorites: 5000 }
@@ -29,6 +30,7 @@ export default function Settings() {
   const fileRef = useRef<HTMLInputElement>(null)
   const [importStatus, setImportStatus] = useState<ImportStatus>(null)
   const [confirmReset, setConfirmReset] = useState(false)
+  const revealRef = useReveal<HTMLDivElement>()
 
   const exportData = () => {
     const { workouts, history, favorites, settings: current } = useStore.getState()
@@ -103,22 +105,25 @@ export default function Settings() {
   }
 
   return (
-    <div className="page max-w-2xl">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold sm:text-3xl">Settings</h1>
-        <p className="mt-1 text-sm text-muted">Personalise GetFit and manage your data.</p>
+    <div className="page max-w-2xl" ref={revealRef}>
+      <header className="mb-8 border-b border-border pb-8" data-reveal>
+        <p className="overline">Preferences</p>
+        <h1 className="mt-3 font-display text-display-sm leading-[1.02]">Settings</h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          Personalise GetFit and manage your data.
+        </p>
       </header>
 
       <div className="flex flex-col gap-4">
         {/* 1) Instruction language */}
-        <section className="card animate-fade-in">
-          <div className="mb-3 flex items-start gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+        <section className="card p-5" data-reveal>
+          <div className="mb-4 flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <Languages size={18} aria-hidden />
             </span>
             <div>
               <h2 className="section-title">Instruction language</h2>
-              <p className="mt-0.5 text-sm text-muted">
+              <p className="mt-1 text-sm leading-relaxed text-muted">
                 Language used for exercise instructions and steps.
               </p>
             </div>
@@ -141,15 +146,15 @@ export default function Settings() {
         </section>
 
         {/* 2) Reduce motion */}
-        <section className="card animate-fade-in">
+        <section className="card p-5" data-reveal>
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
                 <Sparkles size={18} aria-hidden />
               </span>
               <div>
                 <h2 className="section-title">Reduce motion</h2>
-                <p className="mt-0.5 max-w-md text-sm text-muted">
+                <p className="mt-1 max-w-md text-sm leading-relaxed text-muted">
                   Show a click-to-play poster instead of auto-playing exercise animations.
                 </p>
               </div>
@@ -160,13 +165,15 @@ export default function Settings() {
               aria-checked={settings.reduceMotion}
               aria-label="Reduce motion"
               onClick={() => patchSettings({ reduceMotion: !settings.reduceMotion })}
-              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                settings.reduceMotion ? 'bg-primary' : 'bg-surface-2 border border-border-strong'
+              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition-colors duration-200 ease-quint ${
+                settings.reduceMotion
+                  ? 'border-primary bg-primary'
+                  : 'border-border-strong bg-surface-2'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-elev-1 transition-transform ${
-                  settings.reduceMotion ? 'translate-x-6' : 'translate-x-1'
+                className={`inline-block h-4 w-4 transform rounded-full shadow-elev-1 transition-transform duration-200 ease-quint ${
+                  settings.reduceMotion ? 'translate-x-6 bg-primary-fg' : 'translate-x-1 bg-text'
                 }`}
                 aria-hidden
               />
@@ -175,14 +182,16 @@ export default function Settings() {
         </section>
 
         {/* 3) Units */}
-        <section className="card animate-fade-in">
-          <div className="mb-3 flex items-start gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+        <section className="card p-5" data-reveal>
+          <div className="mb-4 flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <Scale size={18} aria-hidden />
             </span>
             <div>
               <h2 className="section-title">Units</h2>
-              <p className="mt-0.5 text-sm text-muted">Weight unit used for logging and totals.</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                Weight unit used for logging and totals.
+              </p>
             </div>
           </div>
           <div role="group" aria-label="Weight units" className="flex gap-2">
@@ -201,9 +210,9 @@ export default function Settings() {
         </section>
 
         {/* 4) Theme */}
-        <section className="card animate-fade-in">
-          <div className="mb-3 flex items-start gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+        <section className="card p-5" data-reveal>
+          <div className="mb-4 flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
               {settings.theme === 'dark' ? (
                 <Moon size={18} aria-hidden />
               ) : (
@@ -212,33 +221,46 @@ export default function Settings() {
             </span>
             <div>
               <h2 className="section-title">Theme</h2>
-              <p className="mt-0.5 text-sm text-muted">Choose a dark or light appearance.</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                Choose a dark or light appearance.
+              </p>
             </div>
           </div>
-          <div role="group" aria-label="Theme" className="flex gap-2">
-            {(['dark', 'light'] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                aria-pressed={settings.theme === t}
-                onClick={() => patchSettings({ theme: t })}
-                className={`chip ${settings.theme === t ? 'chip-active' : ''}`}
-              >
-                {t === 'dark' ? (
-                  <Moon size={14} aria-hidden />
-                ) : (
-                  <Sun size={14} aria-hidden />
-                )}
-                {t === 'dark' ? 'Dark' : 'Light'}
-              </button>
-            ))}
+          <div
+            role="group"
+            aria-label="Theme"
+            className="inline-flex rounded-lg border border-border bg-surface-2 p-1"
+          >
+            {(['dark', 'light'] as const).map((t) => {
+              const active = settings.theme === t
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => patchSettings({ theme: t })}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-4 py-1.5 text-sm font-medium transition-colors duration-200 ease-quint ${
+                    active
+                      ? 'bg-primary text-primary-fg'
+                      : 'text-muted hover:text-text'
+                  }`}
+                >
+                  {t === 'dark' ? (
+                    <Moon size={14} aria-hidden />
+                  ) : (
+                    <Sun size={14} aria-hidden />
+                  )}
+                  {t === 'dark' ? 'Dark' : 'Light'}
+                </button>
+              )
+            })}
           </div>
         </section>
 
         {/* 5) Data management */}
-        <section className="card animate-fade-in">
+        <section className="card p-5" data-reveal>
           <h2 className="section-title">Data management</h2>
-          <p className="mt-0.5 text-sm text-muted">
+          <p className="mt-1 text-sm leading-relaxed text-muted">
             Back up your workouts, history and favorites, or start fresh.
           </p>
 
@@ -293,7 +315,7 @@ export default function Settings() {
                 <Trash2 size={16} aria-hidden />
                 Reset all data
               </button>
-              <p className="mt-2 text-sm text-dim">
+              <p className="mt-2 text-sm leading-relaxed text-dim">
                 Permanently removes all workouts, session history and favorites from this browser.
               </p>
             </div>
@@ -301,14 +323,14 @@ export default function Settings() {
         </section>
 
         {/* 6) Privacy note */}
-        <section className="card animate-fade-in">
+        <section className="card p-5" data-reveal>
           <div className="flex items-start gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success/15 text-success">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success/12 text-success">
               <Lock size={18} aria-hidden />
             </span>
             <div>
               <h2 className="section-title">Privacy</h2>
-              <p className="mt-0.5 text-sm text-muted">
+              <p className="mt-1 text-sm leading-relaxed text-muted">
                 Private by design — all your data stays in this browser's local storage. Nothing is
                 uploaded.
               </p>

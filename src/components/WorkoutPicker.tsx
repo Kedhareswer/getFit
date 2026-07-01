@@ -97,8 +97,8 @@ export function WorkoutPickerProvider({ children }: { children: ReactNode }) {
           aria-live="polite"
           className="fixed inset-x-0 bottom-20 z-50 flex justify-center px-4 lg:bottom-6"
         >
-          <div className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-fg shadow-glow-primary animate-rise-in">
-            <Check size={16} /> {toast}
+          <div className="flex items-center gap-2 rounded-full bg-text px-4 py-2.5 text-sm font-semibold text-bg shadow-elev-2 animate-rise-in">
+            <Check size={16} className="text-primary" /> {toast}
           </div>
         </div>
       )}

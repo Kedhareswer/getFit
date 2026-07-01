@@ -23,9 +23,9 @@ export default function ConfirmDialog({
 }: Props) {
   return (
     <Modal open={open} onClose={onCancel} title={title} size="sm">
-      <p className="text-sm text-muted">{message}</p>
+      <p className="text-sm leading-relaxed text-muted">{message}</p>
       <div className="mt-6 flex justify-end gap-2">
-        <button className="btn btn-ghost" onClick={onCancel}>
+        <button className="btn btn-soft" onClick={onCancel}>
           {cancelLabel}
         </button>
         <button

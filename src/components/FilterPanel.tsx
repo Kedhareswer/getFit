@@ -63,7 +63,7 @@ function FacetGroup({
 
   return (
     <fieldset>
-      <legend className="label">{title}</legend>
+      <legend className="overline mb-2.5">{title}</legend>
       <div className="flex flex-wrap gap-1.5">
         {shown.map((f) => {
           const active = selected.includes(f.value)
@@ -76,21 +76,29 @@ function FacetGroup({
               className={`chip ${active ? 'chip-active' : ''}`}
             >
               {f.label}
-              <span className={active ? 'text-primary/70' : 'text-dim'}>{f.count}</span>
+              <span
+                className={`font-mono tabular-nums ${active ? 'text-primary/70' : 'text-dim'}`}
+              >
+                {f.count}
+              </span>
             </button>
           )
         })}
         {initial && hidden > 0 && (
           <button
             type="button"
-            className="chip border-dashed"
+            className="chip border-dashed text-dim"
             onClick={() => setExpanded(true)}
           >
             +{hidden} more
           </button>
         )}
         {initial && expanded && (
-          <button type="button" className="chip border-dashed" onClick={() => setExpanded(false)}>
+          <button
+            type="button"
+            className="chip border-dashed text-dim"
+            onClick={() => setExpanded(false)}
+          >
             Show less
           </button>
         )}

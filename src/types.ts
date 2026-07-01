@@ -1,6 +1,6 @@
 // Shared domain types for GetFit.
 
-export type Lang = 'en' | 'es' | 'it' | 'tr' | 'ru' | 'zh'
+export type Lang = 'en' | 'es'
 
 /** Lean record loaded eagerly for browse/search/filter (from exercises.index.json). */
 export interface Exercise {

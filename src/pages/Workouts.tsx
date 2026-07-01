@@ -9,6 +9,7 @@ import { useStore } from '../state/store'
 import RequireData from '../components/RequireData'
 import EmptyState from '../components/EmptyState'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
+import { useReveal } from '../lib/anim'
 
 export default function Workouts() {
   return (
@@ -51,6 +52,8 @@ function WorkoutsInner() {
 
   const [pendingDelete, setPendingDelete] = useState<Workout | null>(null)
 
+  const revealRef = useReveal<HTMLDivElement>()
+
   const newWorkout = () => {
     const id = createWorkout('New workout')
     navigate(`/workouts/${id}`)
@@ -67,14 +70,18 @@ function WorkoutsInner() {
   }
 
   return (
-    <div className="page">
-      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div ref={revealRef} className="page">
+      <header
+        className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-8"
+        data-reveal
+      >
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Workouts</h1>
-          <p className="mt-1 text-sm text-muted">
+          <p className="overline">Your routines</p>
+          <h1 className="mt-3 font-display text-display-sm leading-[1.02]">Workouts</h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
             {workouts.length === 0
               ? 'Build a routine to start training.'
-              : `${workouts.length.toLocaleString()} ${workouts.length === 1 ? 'workout' : 'workouts'}`}
+              : `${workouts.length.toLocaleString()} ${workouts.length === 1 ? 'workout' : 'workouts'} saved.`}
           </p>
         </div>
         <button className="btn btn-primary" onClick={newWorkout}>
@@ -140,18 +147,19 @@ function WorkoutCard({ workout, byId, history, onStart, onDuplicate, onDelete }:
   const empty = count === 0
 
   return (
-    <li className="card card-hover flex flex-col gap-3 p-4">
+    <li className="card card-hover flex flex-col gap-3 p-5" data-reveal>
       <div>
         <Link
           to={`/workouts/${workout.id}`}
-          className="line-clamp-2 text-lg font-semibold leading-snug transition hover:text-primary"
+          className="line-clamp-2 font-display text-lg leading-snug transition-colors duration-200 hover:text-primary"
         >
           {workout.name}
         </Link>
-        <p className="mt-1 text-sm text-muted">
-          {count} {count === 1 ? 'exercise' : 'exercises'} · ~{minutes} min
+        <p className="mt-2 font-mono text-xs uppercase tracking-wide text-muted">
+          {count} {count === 1 ? 'exercise' : 'exercises'}
+          <span className="text-dim"> · ~{minutes} min</span>
         </p>
-        <p className="mt-0.5 text-xs text-dim">
+        <p className="mt-1 text-xs text-dim">
           {lastDone !== null ? `Last done ${dateFmt.format(lastDone)}` : 'Not done yet'}
         </p>
       </div>

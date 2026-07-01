@@ -117,7 +117,7 @@ export interface GetFitState {
 const DEFAULT_SETTINGS: Settings = {
   lang: 'en',
   units: 'kg',
-  theme: 'dark',
+  theme: 'light',
   reduceMotion: false,
 }
 

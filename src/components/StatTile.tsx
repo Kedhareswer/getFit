@@ -15,15 +15,15 @@ export default function StatTile({ label, value, unit, icon: Icon, accent }: Pro
         <span className="overline">{label}</span>
         {Icon && (
           <Icon
-            size={16}
+            size={15}
             aria-hidden
             style={accent ? { color: accent } : undefined}
-            className={accent ? '' : 'text-primary'}
+            className={accent ? '' : 'text-dim'}
           />
         )}
       </div>
       <div className="flex items-baseline gap-1">
-        <span className="font-display text-2xl font-bold tabular-nums">{value}</span>
+        <span className="metric text-[1.75rem] font-medium leading-none">{value}</span>
         {unit && <span className="text-xs font-medium text-muted">{unit}</span>}
       </div>
     </div>

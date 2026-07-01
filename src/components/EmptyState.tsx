@@ -17,14 +17,14 @@ interface Props {
 
 export default function EmptyState({ icon: Icon, title, message, action, secondary }: Props) {
   return (
-    <div className="card flex flex-col items-center gap-3 px-6 py-12 text-center">
+    <div className="card flex flex-col items-center gap-3 px-6 py-16 text-center">
       {Icon && (
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-2 text-muted">
-          <Icon size={26} aria-hidden />
+        <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-surface-2 text-dim">
+          <Icon size={24} aria-hidden />
         </span>
       )}
-      <h2 className="text-lg font-bold">{title}</h2>
-      {message && <p className="max-w-sm text-sm text-muted">{message}</p>}
+      <h2 className="font-display text-2xl">{title}</h2>
+      {message && <p className="max-w-sm text-sm leading-relaxed text-muted">{message}</p>}
       {(action || secondary) && (
         <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
           {action && <ActionButton action={action} className="btn btn-primary" />}

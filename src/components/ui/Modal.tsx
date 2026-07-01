@@ -69,7 +69,7 @@ export default function Modal({ open, onClose, title, children, bare, size = 'md
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 backdrop-blur-sm animate-fade-in sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-[#130F0C]/55 p-0 backdrop-blur-sm animate-fade-in sm:items-center sm:p-4"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
@@ -84,7 +84,7 @@ export default function Modal({ open, onClose, title, children, bare, size = 'md
       >
         {!bare && (
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 id={titleId} className="text-lg font-bold">
+            <h2 id={titleId} className="font-display text-xl">
               {title}
             </h2>
             <button className="icon-btn" onClick={onClose} aria-label="Close dialog">

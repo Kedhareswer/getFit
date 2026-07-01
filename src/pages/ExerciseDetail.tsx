@@ -11,6 +11,7 @@ import ExerciseCard from '../components/ExerciseCard'
 import ExerciseGif from '../components/ExerciseGif'
 import EmptyState from '../components/EmptyState'
 import { useWorkoutPicker } from '../components/WorkoutPicker'
+import { useReveal } from '../lib/anim'
 
 const RELATED_LIMIT = 8
 
@@ -38,6 +39,7 @@ function ExerciseDetailInner() {
   const { open } = useWorkoutPicker()
 
   const [lang, setLang] = useState<Lang>(settingsLang)
+  const revealRef = useReveal<HTMLDivElement>([exercise?.id])
 
   const related = useMemo(() => {
     if (!exercise) return []
@@ -69,44 +71,53 @@ function ExerciseDetailInner() {
   const paragraph = full?.instructions?.[lang] ?? full?.instructions?.en
 
   return (
-    <div className="page animate-fade-in">
-      <p className="overline">
-        <Link to="/exercises" className="transition hover:text-text">
-          Library
-        </Link>
-      </p>
+    <div ref={revealRef} className="page">
+      {/* Editorial header */}
+      <header className="mb-8 border-b border-border pb-8" data-reveal>
+        <p className="overline">
+          <Link to="/exercises" className="link">
+            Library
+          </Link>
+          <span className="mx-2 text-dim" aria-hidden>
+            /
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{ background: color }}
+              aria-hidden
+            />
+            {titleCase(exercise.body_part)}
+          </span>
+        </p>
+        <h1 className="mt-3 font-display text-display-sm capitalize leading-[1.02]">
+          {exercise.name}
+        </h1>
+      </header>
 
-      <div className="mt-3 grid gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-8">
-        {/* hero */}
-        <div className="card overflow-hidden p-0">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-10">
+        {/* media */}
+        <div className="card overflow-hidden p-0" data-reveal>
           <ExerciseGif
             mediaId={exercise.media_id}
             name={exercise.name}
+            accent={bodyPartColor(exercise.body_part)}
             eager
             className="aspect-square w-full rounded-2xl"
           />
         </div>
 
         {/* summary + actions */}
-        <div className="min-w-0">
-          <h1 className="text-2xl font-bold capitalize sm:text-3xl">{exercise.name}</h1>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className="badge">
-              <span
-                className="h-2 w-2 rounded-full"
-                style={{ background: color }}
-                aria-hidden
-              />
-              {titleCase(exercise.body_part)}
-            </span>
+        <div className="min-w-0" data-reveal>
+          <p className="overline">Details</p>
+          <div className="mt-3 flex flex-wrap gap-2">
             <span className="badge">{titleCase(exercise.equipment)}</span>
             <span className="badge">{titleCase(exercise.target)}</span>
             <span className="badge">{titleCase(exercise.muscle_group)}</span>
           </div>
 
           {exercise.secondary_muscles.length > 0 && (
-            <div className="mt-4">
+            <div className="mt-6">
               <p className="label mb-2">Secondary muscles</p>
               <div className="flex flex-wrap gap-2">
                 {exercise.secondary_muscles.map((muscle) => (
@@ -122,7 +133,7 @@ function ExerciseDetailInner() {
             </div>
           )}
 
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-8 flex flex-wrap gap-2">
             <button
               type="button"
               className="btn btn-soft"
@@ -151,8 +162,9 @@ function ExerciseDetailInner() {
       </div>
 
       {/* instructions */}
-      <section className="mt-10" aria-labelledby="instructions-heading">
-        <h2 id="instructions-heading" className="section-title">
+      <section className="mt-12" aria-labelledby="instructions-heading" data-reveal>
+        <p className="overline">How to</p>
+        <h2 id="instructions-heading" className="section-title mt-1 mb-4">
           Instructions
         </h2>
 
@@ -211,8 +223,9 @@ function ExerciseDetailInner() {
 
       {/* related */}
       {related.length > 0 && (
-        <section className="mt-10" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="section-title">
+        <section className="mt-12" aria-labelledby="related-heading" data-reveal>
+          <p className="overline">More like this</p>
+          <h2 id="related-heading" className="section-title mt-1 mb-4">
             Related exercises
           </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">

@@ -8,6 +8,7 @@ import { useStore } from '../state/store'
 import { useInterval } from '../lib/hooks'
 import { formatDuration } from '../lib/session'
 import { titleCase } from '../lib/data'
+import { bodyPartColor } from '../lib/theme'
 import ExerciseGif from '../components/ExerciseGif'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 
@@ -72,7 +73,8 @@ function NoSession() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="card flex max-w-sm flex-col items-center gap-3 px-6 py-12 text-center animate-rise-in">
-        <h1 className="text-lg font-bold">No active session</h1>
+        <p className="overline">No session</p>
+        <h1 className="font-display text-xl leading-tight">No active session</h1>
         <p className="text-sm text-muted">
           This workout isn’t running. Start one from your workouts to track sets and rest.
         </p>
@@ -189,13 +191,13 @@ function PlayerInner({
       <header className="sticky top-0 z-20 border-b border-border bg-bg/85 backdrop-blur">
         <div className="mx-auto flex w-full max-w-2xl items-center gap-3 px-4 py-3">
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-base font-bold leading-tight sm:text-lg">{session.name}</h1>
-            <p className="text-xs text-muted" aria-live="polite">
+            <h1 className="truncate font-display text-base leading-tight sm:text-lg">{session.name}</h1>
+            <p className="overline mt-0.5" aria-live="polite">
               Exercise {safeIdx + 1} of {n}
             </p>
           </div>
           <div
-            className="font-display text-lg font-bold tabular-nums"
+            className="metric text-lg"
             aria-label={`Elapsed time ${formatDuration(elapsed)}`}
           >
             {formatDuration(elapsed)}
@@ -222,11 +224,12 @@ function PlayerInner({
         <ExerciseGif
           mediaId={meta?.media_id ?? null}
           name={meta?.name ?? 'Exercise'}
+          accent={meta ? bodyPartColor(meta.body_part) : undefined}
           eager
           className="aspect-video w-full max-h-[40vh] rounded-2xl"
         />
 
-        <h2 className="mt-4 text-xl font-bold capitalize">{meta?.name ?? 'Exercise'}</h2>
+        <h2 className="mt-4 font-display text-xl capitalize leading-tight">{meta?.name ?? 'Exercise'}</h2>
         {meta && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             <span className="badge">{titleCase(meta.body_part)}</span>
@@ -258,8 +261,8 @@ function PlayerInner({
                 }`}
               >
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold ${
-                    set.done ? 'bg-success/20 text-success' : 'bg-surface-2 text-muted'
+                  className={`metric flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm ${
+                    set.done ? 'bg-success/15 text-success' : 'bg-surface-2 text-muted'
                   }`}
                   aria-hidden
                 >
@@ -308,11 +311,15 @@ function PlayerInner({
 
         {/* Rest timer */}
         <section className="mt-6" aria-label="Rest timer">
-          <div className="card flex items-center justify-between gap-3 p-4">
+          <div
+            className={`card flex items-center justify-between gap-3 p-4 transition-colors duration-300 ${
+              restActive ? 'border-primary/40' : ''
+            }`}
+          >
             <div>
               <div className="overline">Rest</div>
               <div
-                className={`font-display text-3xl font-bold tabular-nums ${
+                className={`metric text-3xl ${
                   restActive ? 'text-primary' : 'text-muted'
                 } ${running && !reduceMotion ? 'animate-pulse' : ''}`}
               >

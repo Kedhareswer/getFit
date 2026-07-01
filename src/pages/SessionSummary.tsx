@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CheckCircle2, Clock, Dumbbell, ListChecks, Save, Trash2, Trophy } from 'lucide-react'
+import { Save, Trash2 } from 'lucide-react'
 import { useData } from '../state/DataContext'
 import { useStore } from '../state/store'
 import { computeSessionTotals, formatDuration } from '../lib/session'
 import { titleCase } from '../lib/data'
-import StatTile from '../components/StatTile'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
+import { Words, CountUp, useReveal } from '../lib/anim'
 
 export default function SessionSummary() {
   const navigate = useNavigate()
@@ -19,6 +19,7 @@ export default function SessionSummary() {
   // Freeze the finish time once, on first render.
   const [finishedAt] = useState(() => Date.now())
   const [confirmDiscard, setConfirmDiscard] = useState(false)
+  const revealRef = useReveal<HTMLDivElement>()
 
   // Derive everything that depends on the (possibly null) active session,
   // before any early return, so hook order stays stable.
@@ -32,7 +33,8 @@ export default function SessionSummary() {
     return (
       <main className="flex min-h-screen items-center justify-center p-4">
         <div className="card w-full max-w-md animate-rise-in px-6 py-12 text-center">
-          <h1 className="text-xl font-bold">Nothing to summarize</h1>
+          <p className="overline">Session summary</p>
+          <h1 className="mt-2 font-display text-xl leading-tight">Nothing to summarize</h1>
           <p className="mt-2 text-sm text-muted">
             There is no workout in progress. Start a session to track your sets.
           </p>
@@ -71,48 +73,56 @@ export default function SessionSummary() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-6">
-      <div className="w-full max-w-2xl">
+      <div ref={revealRef} className="w-full max-w-2xl">
         {/* Celebratory completion header */}
-        <header className="card relative overflow-hidden px-6 py-8 text-center shadow-glow-primary animate-scale-in">
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/15 to-transparent"
-            aria-hidden
+        <header className="border-b border-border pb-8" data-reveal>
+          <p className="overline text-primary">Workout complete</p>
+          <Words
+            as="h1"
+            text={'Nice work.'}
+            className="mt-4 font-display text-display leading-[0.95]"
           />
-          <div className="relative flex flex-col items-center gap-3">
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-              <Trophy size={32} aria-hidden />
-            </span>
-            <p className="overline text-primary">Workout complete</p>
-            <h1 className="text-2xl font-bold capitalize sm:text-3xl">{activeSession.name}</h1>
-            <p className="max-w-md text-sm text-muted">
-              Nice work. Review your session below, then save it to your progress.
-            </p>
-          </div>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
+            <span className="capitalize text-text">{activeSession.name}</span> is done. Review your
+            session below, then save it to your progress.
+          </p>
         </header>
 
         {/* Stat row */}
         <section
-          className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-rise-in"
+          className="mt-8 grid grid-cols-2 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface sm:grid-cols-4 sm:divide-y-0 sm:divide-x"
           aria-label="Session totals"
+          data-reveal
         >
-          <StatTile label="Duration" value={formatDuration(durationSec)} icon={Clock} />
-          <StatTile
-            label="Volume"
-            value={totalVolume.toLocaleString()}
-            unit={settings.units}
-            icon={Dumbbell}
-          />
-          <StatTile label="Sets done" value={totalSets} icon={ListChecks} />
-          <StatTile
-            label="Exercises"
-            value={`${exercisesCompleted}/${activeSession.exercises.length}`}
-            icon={CheckCircle2}
-          />
+          <div className="flex flex-col gap-1.5 p-5">
+            <span className="overline">Duration</span>
+            <span className="metric text-[1.75rem] font-medium leading-none">
+              {formatDuration(durationSec)}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1.5 p-5">
+            <span className="overline">Volume</span>
+            <span className="flex items-baseline gap-1">
+              <CountUp value={totalVolume} className="metric text-[1.75rem] font-medium leading-none" />
+              <span className="text-xs font-medium text-muted">{settings.units}</span>
+            </span>
+          </div>
+          <div className="flex flex-col gap-1.5 p-5">
+            <span className="overline">Sets done</span>
+            <CountUp value={totalSets} className="metric text-[1.75rem] font-medium leading-none" />
+          </div>
+          <div className="flex flex-col gap-1.5 p-5">
+            <span className="overline">Exercises</span>
+            <span className="metric text-[1.75rem] font-medium leading-none">
+              {exercisesCompleted}/{activeSession.exercises.length}
+            </span>
+          </div>
         </section>
 
         {/* Per-exercise recap */}
-        <section className="mt-6 animate-fade-in" aria-label="Exercise recap">
-          <h2 className="section-title mb-3">Recap</h2>
+        <section className="mt-10" aria-label="Exercise recap" data-reveal>
+          <p className="overline">Breakdown</p>
+          <h2 className="section-title mt-1 mb-4">Recap</h2>
           <ol className="flex flex-col gap-3">
             {activeSession.exercises.map((ex, i) => {
               const meta = byId.get(ex.exerciseId)
@@ -121,8 +131,8 @@ export default function SessionSummary() {
               return (
                 <li key={`${ex.exerciseId}-${i}`} className="card p-4">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-semibold capitalize leading-snug">{name}</h3>
-                    <span className="badge shrink-0">
+                    <h3 className="font-display capitalize leading-snug">{name}</h3>
+                    <span className="badge shrink-0 tabular-nums">
                       {doneCount}/{ex.sets.length} sets
                     </span>
                   </div>
@@ -130,7 +140,7 @@ export default function SessionSummary() {
                     {ex.sets.map((s, j) => (
                       <span
                         key={j}
-                        className={`chip ${s.done ? 'chip-active' : 'opacity-50'}`}
+                        className={`chip tabular-nums ${s.done ? 'chip-active' : 'opacity-50'}`}
                       >
                         {s.reps} × {s.weight}
                         {settings.units}

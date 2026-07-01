@@ -2,134 +2,150 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------------------------------------------------------------- tokens */
+/* ================================================================ tokens
+   Warm-minimal, editorial. Never pure #fff / #000 — paper & ink.
+   Light is the default; dark is a refined warm-black counterpart.
+   ---------------------------------------------------------------------- */
 :root,
-[data-theme='dark'] {
-  --bg: 10 11 13;
-  --surface: 19 21 25;
-  --surface-2: 27 30 36;
-  --border: 38 42 49;
-  --border-strong: 54 59 68;
-  --text: 244 246 248;
-  --muted: 156 163 175;
-  --dim: 107 114 128;
-  --primary: 163 230 53; /* energetic lime */
-  --primary-fg: 10 11 13;
-  --secondary: 255 122 69; /* burn / intensity */
-  --success: 52 211 153;
-  --warning: 251 191 36;
-  --danger: 248 113 113;
-  --info: 96 165 250;
-  color-scheme: dark;
-}
-
 [data-theme='light'] {
-  --bg: 247 248 250;
-  --surface: 255 255 255;
-  --surface-2: 241 243 245;
-  --border: 226 230 235;
-  --border-strong: 200 206 214;
-  --text: 14 17 22;
-  --muted: 90 99 112;
-  --dim: 138 147 160;
-  --primary: 132 204 22;
-  --primary-fg: 247 248 250;
-  --secondary: 234 88 12;
-  --success: 16 185 129;
-  --warning: 217 119 6;
-  --danger: 220 38 38;
-  --info: 37 99 235;
+  --bg: 244 239 235;          /* #F4EFEB warm paper / oat            */
+  --surface: 253 251 248;     /* #FDFBF8 raised card                 */
+  --surface-2: 236 230 221;   /* #ECE6DD inset / hover               */
+  --border: 226 219 208;      /* #E2DBD0 hairline                    */
+  --border-strong: 208 199 185;/* #D0C7B9 stronger hairline          */
+  --text: 19 15 12;           /* #130F0C ink                         */
+  --muted: 110 101 88;        /* #6E6558 ~55% ink, warm gray         */
+  --dim: 155 145 131;         /* #9B9183 quiet captions              */
+  --primary: 251 132 66;      /* #FB8442 the one accent — burnt orange */
+  --primary-fg: 19 15 12;     /* ink on orange (accessible)          */
+  --secondary: 90 80 68;      /* #5A5044 "ink-lite" button           */
+  --secondary-fg: 244 239 235;
+  --success: 22 128 84;       /* #168054                             */
+  --warning: 176 108 26;      /* #B06C1A                             */
+  --danger: 194 55 44;        /* #C2372C                             */
+  --info: 45 106 189;         /* #2D6ABD                             */
   color-scheme: light;
 }
 
-/* ------------------------------------------------------------------ base */
+[data-theme='dark'] {
+  --bg: 19 15 12;             /* #130F0C warm near-black             */
+  --surface: 33 29 25;        /* #211D19                             */
+  --surface-2: 44 39 34;      /* #2C2722                             */
+  --border: 45 40 35;         /* #2D2823 hairline on dark            */
+  --border-strong: 62 56 49;  /* #3E3831                             */
+  --text: 244 239 235;        /* #F4EFEB paper                       */
+  --muted: 173 162 148;       /* #ADA294                             */
+  --dim: 123 113 101;         /* #7B7165                             */
+  --primary: 251 132 66;      /* same burnt orange                   */
+  --primary-fg: 19 15 12;
+  --secondary: 235 219 178;   /* #EBDBB2 gruvbox cream               */
+  --secondary-fg: 19 15 12;
+  --success: 60 214 128;      /* #3CD680                             */
+  --warning: 245 215 110;     /* #F5D76E                             */
+  --danger: 240 113 100;      /* #F07164                             */
+  --info: 122 172 255;
+  color-scheme: dark;
+}
+
+/* ================================================================== base */
 @layer base {
   * {
     @apply border-border;
   }
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-bg text-text font-sans antialiased;
-    background-image: radial-gradient(60rem 40rem at 85% -10%, rgb(var(--primary) / 0.06), transparent 60%),
-      radial-gradient(50rem 40rem at -10% 10%, rgb(var(--secondary) / 0.05), transparent 55%);
-    background-attachment: fixed;
+    /* flat, warm — no neon wash */
   }
-  h1, h2, h3 {
-    @apply font-display tracking-tight text-text;
+  h1, h2, h3, h4 {
+    @apply font-display font-normal tracking-tight text-text;
   }
   /* Accessible, always-visible focus ring */
   :focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+    @apply outline-none ring-2 ring-text/70 ring-offset-2 ring-offset-bg;
   }
-  /* Numeric inputs: hide spinners for a cleaner look */
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
   ::selection {
-    background: rgb(var(--primary) / 0.3);
+    background: rgb(var(--primary));
+    color: #fff;
   }
-  /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
   ::-webkit-scrollbar-thumb {
     background: rgb(var(--border-strong));
     border-radius: 99px;
-    border: 2px solid rgb(var(--bg));
+    border: 3px solid rgb(var(--bg));
   }
-  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted) / 0.7); }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted) / 0.6); }
 }
 
-/* ------------------------------------------------------------ components */
+/* ============================================================ components */
 @layer components {
   .card {
-    @apply rounded-2xl border border-border bg-surface shadow-elev-1;
+    @apply rounded-2xl border border-border bg-surface;
   }
   .card-hover {
-    @apply transition duration-200 hover:border-border-strong hover:bg-surface-2 hover:-translate-y-0.5 hover:shadow-elev-2;
+    @apply transition-[transform,border-color,box-shadow] duration-300 ease-quint
+      hover:-translate-y-0.5 hover:border-border-strong hover:shadow-elev-2;
   }
 
   .btn {
-    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
-      transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium
+      tracking-tight transition duration-200 ease-quint active:scale-[0.98]
+      disabled:pointer-events-none disabled:opacity-50;
   }
-  .btn-primary { @apply bg-primary text-primary-fg hover:shadow-glow-primary hover:brightness-105; }
-  .btn-secondary { @apply bg-secondary text-white hover:shadow-glow-secondary hover:brightness-105; }
-  .btn-soft { @apply bg-surface-2 text-text hover:bg-border ring-1 ring-inset ring-border; }
+  .btn-primary { @apply bg-primary text-primary-fg hover:brightness-95; }
+  .btn-secondary { @apply bg-secondary text-secondary-fg hover:brightness-110; }
+  .btn-soft { @apply bg-surface-2 text-text ring-1 ring-inset ring-border hover:border-border-strong hover:bg-border/60; }
   .btn-ghost { @apply text-muted hover:bg-surface-2 hover:text-text; }
-  .btn-danger { @apply bg-danger/15 text-danger ring-1 ring-inset ring-danger/30 hover:bg-danger/25; }
-  .btn-sm { @apply px-3 py-1.5 text-xs rounded-lg; }
-  .btn-lg { @apply px-6 py-3.5 text-base rounded-2xl; }
+  .btn-danger { @apply bg-danger/10 text-danger ring-1 ring-inset ring-danger/25 hover:bg-danger/20; }
+  .btn-sm { @apply px-3 py-1.5 text-xs rounded-md; }
+  .btn-lg { @apply px-6 py-3.5 text-base rounded-xl; }
 
   .icon-btn {
-    @apply inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition duration-200 ease-quint
       hover:bg-surface-2 hover:text-text;
   }
 
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm
-      font-medium text-muted transition hover:border-border-strong hover:text-text;
+      font-medium text-muted transition duration-200 ease-quint hover:border-border-strong hover:text-text;
   }
   .chip-active {
-    @apply border-primary/50 bg-primary/15 text-primary hover:text-primary;
+    @apply border-primary bg-primary/10 text-text hover:text-text;
   }
 
   .input {
-    @apply w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text
-      placeholder:text-dim transition focus:border-primary/60;
+    @apply w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-text
+      placeholder:text-dim transition duration-200 focus:border-primary;
   }
-  .label { @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted; }
+  .label { @apply mb-1.5 block font-mono text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-muted; }
 
   .badge {
-    @apply inline-flex items-center gap-1 rounded-md bg-surface-2 px-2 py-0.5 text-xs font-medium text-muted;
+    @apply inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2 py-0.5
+      font-mono text-[0.6875rem] font-medium text-muted;
   }
 
-  .overline { @apply text-overline font-semibold uppercase text-muted; }
+  /* Tracked-out uppercase mono kicker — the "eyebrow" */
+  .overline {
+    @apply font-mono text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-muted;
+  }
+
+  /* Accessible inline link: ink text, accent underline (orange text alone fails contrast) */
+  .link {
+    @apply font-medium text-text underline decoration-primary/70 decoration-2 underline-offset-[3px]
+      transition-colors hover:decoration-primary;
+  }
 
   .stat-tile {
-    @apply card flex flex-col gap-1 p-4;
+    @apply card flex flex-col gap-1.5 p-4;
   }
 
   /* loading skeleton with shimmer */
@@ -139,15 +155,27 @@
   .skeleton::after {
     content: '';
     @apply absolute inset-0 -translate-x-full;
-    background: linear-gradient(90deg, transparent, rgb(var(--border-strong) / 0.5), transparent);
-    animation: shimmer 1.4s infinite;
+    background: linear-gradient(90deg, transparent, rgb(var(--border-strong) / 0.6), transparent);
+    animation: shimmer 1.5s infinite;
   }
 
-  .page { @apply mx-auto w-full max-w-6xl px-4 pb-24 pt-6 sm:px-6 lg:pb-8; }
-  .section-title { @apply text-lg font-bold text-text sm:text-xl; }
+  .page { @apply mx-auto w-full max-w-5xl px-5 pb-28 pt-8 sm:px-8 lg:pb-16; }
+  .page-wide { @apply mx-auto w-full max-w-6xl px-5 pb-28 pt-8 sm:px-8 lg:pb-16; }
+  .section-title { @apply font-display text-2xl font-normal tracking-tight text-text; }
+
+  /* metric numerals — technical, aligned */
+  .metric { @apply font-mono tabular-nums tracking-tight; }
+
+  /* hairline divider */
+  .hr { @apply border-0 border-t border-border; }
 }
 
-/* --------------------------------------------------- reduced motion guard */
+/* =============================================== hero word-mask reveal */
+.words-line { display: block; }
+.word-mask { display: inline-block; overflow: hidden; vertical-align: top; }
+.word-inner { display: inline-block; will-change: transform; }
+
+/* ============================================== reduced-motion guard */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -157,10 +185,19 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+  [data-reveal],
+  .word-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
-/* Manual override: when the app sets reduce-motion, freeze GIFs is handled in JS,
-   and we also kill decorative animations app-wide. */
+/* Manual override from Settings: freeze decorative motion app-wide. */
 [data-reduce-motion='true'] * {
   animation-duration: 0.001ms !important;
   transition-duration: 0.001ms !important;
+}
+[data-reduce-motion='true'] [data-reveal],
+[data-reduce-motion='true'] .word-inner {
+  opacity: 1 !important;
+  transform: none !important;
 }

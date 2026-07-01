@@ -1,23 +1,20 @@
 import type { Exercise, ExerciseFull, Facets, FilterCriteria, Lang } from '../types'
 
-export const LANGS: Lang[] = ['en', 'es', 'it', 'tr', 'ru', 'zh']
+export const LANGS: Lang[] = ['en', 'es']
 export const LANG_NAMES: Record<Lang, string> = {
   en: 'English',
   es: 'Español',
-  it: 'Italiano',
-  tr: 'Türkçe',
-  ru: 'Русский',
-  zh: '中文',
 }
 
-const MEDIA_HOST = 'https://static.exercisedb.dev/media'
+// Free, reliably-hosted animated GIFs via jsDelivr (github.com/JahelCuadrado/ExerciseGymGifsDB).
+const MEDIA_HOST = 'https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0'
 
-/** Build the hotlinked animation URL for an exercise, or null if no media id. */
+/** Build the animation URL from a "muscle/slug.gif" media id, or null if missing/malformed. */
 export function mediaUrl(mediaId: string | null | undefined): string | null {
   if (!mediaId) return null
-  // ponytail: media_id values are short alphanumerics from the dataset; guard anyway.
-  if (!/^[\w-]{1,32}$/.test(mediaId)) return null
-  return `${MEDIA_HOST}/${mediaId}.gif`
+  // media_id is a "<muscle>/<slug>.gif" path appended to a fixed CDN host; validate strictly.
+  if (!/^[a-z0-9-]{1,40}\/[a-z0-9-]{1,80}\.gif$/.test(mediaId)) return null
+  return `${MEDIA_HOST}/${mediaId}`
 }
 
 /** "body weight" -> "Body Weight" */

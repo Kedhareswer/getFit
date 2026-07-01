@@ -21,6 +21,7 @@ import ExerciseGif from '../components/ExerciseGif'
 import FilterPanel from '../components/FilterPanel'
 import EmptyState from '../components/EmptyState'
 import Modal from '../components/ui/Modal'
+import { useReveal } from '../lib/anim'
 
 export default function Builder() {
   return (
@@ -45,6 +46,8 @@ function BuilderInner() {
 
   const [pickerOpen, setPickerOpen] = useState(false)
 
+  const revealRef = useReveal<HTMLDivElement>([workout?.exercises.length])
+
   if (!workout || !id) {
     return (
       <div className="page">
@@ -67,42 +70,44 @@ function BuilderInner() {
   }
 
   return (
-    <div className="page pb-24">
-      <header className="mb-5 animate-fade-in">
+    <div ref={revealRef} className="page pb-24">
+      <header className="mb-8 border-b border-border pb-8" data-reveal>
         <Link
           to="/workouts"
-          className="text-sm font-medium text-muted underline-offset-2 hover:text-text hover:underline"
+          className="font-mono text-xs uppercase tracking-wide text-muted transition-colors duration-200 hover:text-text"
         >
           ← Back to workouts
         </Link>
         <h1 className="sr-only">Edit workout {workout.name}</h1>
+        <p className="overline mt-4">Workout builder</p>
         <label className="label mt-3 block" htmlFor="workout-name">
           Workout name
         </label>
-        <div className="flex items-center gap-2">
-          <input
-            id="workout-name"
-            className="input flex-1 text-lg font-semibold"
-            value={workout.name}
-            maxLength={60}
-            onChange={(e) => renameWorkout(id, e.target.value)}
-            aria-label="Workout name"
-          />
-        </div>
-        <p className="mt-2 flex items-center gap-1 text-xs text-muted" aria-live="polite">
+        <input
+          id="workout-name"
+          className="input mt-2 font-display text-display-sm leading-[1.02]"
+          value={workout.name}
+          maxLength={60}
+          onChange={(e) => renameWorkout(id, e.target.value)}
+          aria-label="Workout name"
+        />
+        <p className="mt-3 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide text-muted" aria-live="polite">
           <Check size={14} aria-hidden /> Saved automatically
         </p>
       </header>
 
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="section-title">Exercises</h2>
+      <div className="mb-4 flex items-end justify-between gap-3" data-reveal>
+        <div>
+          <p className="overline">The plan</p>
+          <h2 className="section-title mt-1">Exercises</h2>
+        </div>
         <button className="btn btn-secondary btn-sm" onClick={() => setPickerOpen(true)}>
           <Plus size={16} /> Add exercises
         </button>
       </div>
 
       {isEmpty ? (
-        <div className="card flex flex-col items-center gap-3 px-6 py-10 text-center">
+        <div className="card flex flex-col items-center gap-3 px-6 py-12 text-center" data-reveal>
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-2 text-muted">
             <Dumbbell size={24} aria-hidden />
           </span>
@@ -118,7 +123,7 @@ function BuilderInner() {
             const name = ex?.name ?? 'Unknown exercise'
             const last = i === workout.exercises.length - 1
             return (
-              <li key={`${we.exerciseId}-${i}`} className="card animate-rise-in p-3">
+              <li key={`${we.exerciseId}-${i}`} className="card p-4" data-reveal>
                 <div className="flex gap-3">
                   <ExerciseGif
                     mediaId={ex?.media_id ?? null}
@@ -132,12 +137,12 @@ function BuilderInner() {
                         {ex ? (
                           <Link
                             to={`/exercises/${we.exerciseId}`}
-                            className="block truncate font-semibold capitalize leading-snug transition hover:text-primary"
+                            className="block truncate font-display capitalize leading-snug transition-colors duration-200 hover:text-primary"
                           >
                             {name}
                           </Link>
                         ) : (
-                          <span className="block truncate font-semibold leading-snug text-muted">
+                          <span className="block truncate font-display leading-snug text-muted">
                             {name}
                           </span>
                         )}
@@ -210,10 +215,12 @@ function BuilderInner() {
       {/* sticky summary + actions */}
       <div className="sticky bottom-16 z-20 -mx-4 mt-6 border-t border-border bg-bg/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:bottom-0">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-muted">
-            <span className="font-semibold text-text">{workout.exercises.length}</span> exercises ·{' '}
-            <span className="font-semibold text-text">{totalSets}</span> sets · ~
-            <span className="font-semibold text-text">{minutes}</span> min
+          <p className="font-mono text-xs uppercase tracking-wide text-muted">
+            <span className="tabular-nums text-text">{workout.exercises.length}</span> exercises
+            <span className="text-dim"> · </span>
+            <span className="tabular-nums text-text">{totalSets}</span> sets
+            <span className="text-dim"> · ~</span>
+            <span className="tabular-nums text-text">{minutes}</span> min
           </p>
           <div className="flex items-center gap-2">
             <Link to="/workouts" className="btn btn-ghost btn-sm">
@@ -338,7 +345,7 @@ function ExercisePicker({
         </div>
       )}
 
-      <p className="text-sm text-muted" aria-live="polite">
+      <p className="font-mono text-xs uppercase tracking-wide text-muted" aria-live="polite">
         {results.length.toLocaleString()} {results.length === 1 ? 'exercise' : 'exercises'}
       </p>
 
@@ -352,7 +359,7 @@ function ExercisePicker({
               return (
                 <li
                   key={ex.id}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-surface p-2"
+                  className="flex items-center gap-3 rounded-xl border border-border bg-surface p-2 transition-colors duration-200 hover:border-border-strong"
                 >
                   <ExerciseGif
                     mediaId={ex.media_id}
@@ -363,7 +370,9 @@ function ExercisePicker({
                     <p className="truncate text-sm font-semibold capitalize leading-snug">
                       {ex.name}
                     </p>
-                    <p className="truncate text-xs text-muted">{titleCase(ex.target)}</p>
+                    <p className="truncate font-mono text-[0.7rem] uppercase tracking-wide text-muted">
+                      {titleCase(ex.target)}
+                    </p>
                   </div>
                   <button
                     type="button"

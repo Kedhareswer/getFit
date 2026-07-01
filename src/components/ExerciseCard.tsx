@@ -20,31 +20,38 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
         onClick={() => toggleFavorite(exercise.id)}
         aria-pressed={isFav}
         aria-label={isFav ? `Remove ${exercise.name} from favorites` : `Add ${exercise.name} to favorites`}
-        className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-bg/70 text-muted backdrop-blur transition hover:text-text"
+        className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-bg/80 text-muted backdrop-blur transition hover:text-text"
       >
-        <Star size={16} className={isFav ? 'fill-warning text-warning' : ''} aria-hidden />
+        <Star size={15} className={isFav ? 'fill-warning text-warning' : ''} aria-hidden />
       </button>
 
-      <Link to={`/exercises/${exercise.id}`} className="block focus-visible:outline-none">
-        <ExerciseGif mediaId={exercise.media_id} name={exercise.name} className="aspect-square w-full" />
+      <Link to={`/exercises/${exercise.id}`} className="block overflow-hidden focus-visible:outline-none">
+        <ExerciseGif
+          mediaId={exercise.media_id}
+          name={exercise.name}
+          accent={color}
+          className="aspect-square w-full transition-transform duration-[600ms] ease-quint group-hover:scale-[1.05]"
+        />
       </Link>
 
-      <div className="flex flex-1 flex-col gap-2 p-3">
+      <div className="flex flex-1 flex-col gap-2.5 p-3.5">
         <Link
           to={`/exercises/${exercise.id}`}
-          className="line-clamp-2 font-semibold capitalize leading-snug transition hover:text-primary"
+          className="line-clamp-2 font-medium capitalize leading-snug decoration-primary/60 decoration-2 underline-offset-2 transition group-hover:underline"
         >
           {exercise.name}
         </Link>
         <div className="flex flex-wrap gap-1.5">
           <span className="badge">
-            <span className="h-2 w-2 rounded-full" style={{ background: color }} aria-hidden />
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} aria-hidden />
             {titleCase(exercise.body_part)}
           </span>
           <span className="badge">{titleCase(exercise.equipment)}</span>
         </div>
         <div className="mt-auto flex items-center justify-between gap-2 pt-1">
-          <span className="truncate text-xs text-muted">{titleCase(exercise.target)}</span>
+          <span className="truncate font-mono text-[0.7rem] uppercase tracking-wide text-dim">
+            {titleCase(exercise.target)}
+          </span>
           <button
             className="btn btn-soft btn-sm shrink-0"
             onClick={() => open(exercise.id)}

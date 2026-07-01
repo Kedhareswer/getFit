@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Activity, Dumbbell, Flame, Timer, Trash2 } from 'lucide-react'
+import { Activity, Trash2 } from 'lucide-react'
 import type { SessionLog } from '../types'
 import { useStore } from '../state/store'
 import { computeStreak, formatDuration, volumeByDay } from '../lib/session'
 import { formatNumber } from '../lib/theme'
+import { CountUp, useReveal } from '../lib/anim'
 import EmptyState from '../components/EmptyState'
-import StatTile from '../components/StatTile'
 import MiniBarChart from '../components/MiniBarChart'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 
@@ -87,11 +87,14 @@ export default function Progress() {
 
   const reversed = useMemo(() => [...history].reverse(), [history])
 
+  const revealRef = useReveal<HTMLDivElement>([history.length])
+
   if (history.length === 0) {
     return (
       <div className="page">
-        <header className="mb-5">
-          <h1 className="text-2xl font-bold sm:text-3xl">Progress</h1>
+        <header className="mb-8 border-b border-border pb-8">
+          <p className="overline">Your training</p>
+          <h1 className="mt-3 font-display text-display-sm leading-[1.02]">Progress</h1>
         </header>
         <EmptyState
           icon={Activity}
@@ -104,40 +107,55 @@ export default function Progress() {
   }
 
   return (
-    <div className="page">
-      <header className="mb-5">
-        <h1 className="text-2xl font-bold sm:text-3xl">Progress</h1>
-        <p className="mt-1 text-sm text-muted">Your trends, streak and training history.</p>
+    <div className="page" ref={revealRef}>
+      <header className="mb-8 border-b border-border pb-8" data-reveal>
+        <p className="overline">Your training</p>
+        <h1 className="mt-3 font-display text-display-sm leading-[1.02]">Progress</h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          Your trends, streak and training history.
+        </p>
       </header>
 
       {/* headline stats */}
-      <section aria-label="Summary" className="mb-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <StatTile
-          label="Current streak"
-          value={formatNumber(totals.streak)}
-          unit={totals.streak === 1 ? 'day' : 'days'}
-          icon={Flame}
-          accent="#FB923C"
-        />
-        <StatTile label="Total sessions" value={formatNumber(totals.sessions)} icon={Activity} />
-        <StatTile
-          label="Total volume"
-          value={formatNumber(totals.volume)}
-          unit={units}
-          icon={Dumbbell}
-        />
-        <StatTile
-          label="Total minutes"
-          value={formatNumber(totals.minutes)}
-          unit="min"
-          icon={Timer}
-        />
+      <section
+        aria-label="Summary"
+        className="mb-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:gap-x-10 lg:grid-cols-4"
+        data-reveal
+      >
+        <div>
+          <p className="overline">Current streak</p>
+          <p className="mt-2 flex items-baseline gap-1.5">
+            <CountUp value={totals.streak} className="metric text-3xl font-medium leading-none text-primary" />
+            <span className="text-xs font-medium text-muted">{totals.streak === 1 ? 'day' : 'days'}</span>
+          </p>
+        </div>
+        <div>
+          <p className="overline">Total sessions</p>
+          <p className="mt-2">
+            <CountUp value={totals.sessions} className="metric text-3xl font-medium leading-none text-text" />
+          </p>
+        </div>
+        <div>
+          <p className="overline">Total volume</p>
+          <p className="mt-2 flex items-baseline gap-1.5">
+            <CountUp value={totals.volume} className="metric text-3xl font-medium leading-none text-text" />
+            <span className="text-xs font-medium text-muted">{units}</span>
+          </p>
+        </div>
+        <div>
+          <p className="overline">Total minutes</p>
+          <p className="mt-2 flex items-baseline gap-1.5">
+            <CountUp value={totals.minutes} className="metric text-3xl font-medium leading-none text-text" />
+            <span className="text-xs font-medium text-muted">min</span>
+          </p>
+        </div>
       </section>
 
       {/* volume trend */}
-      <section className="mb-8">
-        <div className="card animate-rise-in">
-          <h2 className="section-title mb-4">Last 14 days</h2>
+      <section className="mb-8" data-reveal>
+        <div className="card">
+          <p className="overline">Volume trend</p>
+          <h2 className="section-title mt-2 mb-5">Last 14 days</h2>
           <MiniBarChart
             data={trend}
             unit={units}
@@ -147,9 +165,10 @@ export default function Progress() {
       </section>
 
       {/* activity heatmap */}
-      <section className="mb-8">
-        <div className="card animate-rise-in">
-          <h2 className="section-title mb-4">Activity</h2>
+      <section className="mb-8" data-reveal>
+        <div className="card">
+          <p className="overline">Consistency</p>
+          <h2 className="section-title mt-2 mb-5">Activity</h2>
           <div className="overflow-x-auto pb-1">
             <div className="grid grid-flow-col grid-rows-7 gap-1" role="img" aria-label="Activity heatmap of the last 84 days">
               {heatmap.map((cell) => {
@@ -167,7 +186,7 @@ export default function Progress() {
               })}
             </div>
           </div>
-          <div className="mt-3 flex items-center gap-2 text-xs text-dim">
+          <div className="mt-3 flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-wide text-dim">
             <span>Less</span>
             <span className="h-3.5 w-3.5 rounded-sm bg-surface-2" aria-hidden />
             <span className="h-3.5 w-3.5 rounded-sm bg-primary/30" aria-hidden />
@@ -206,19 +225,24 @@ export default function Progress() {
       </section>
 
       {/* history list */}
-      <section aria-label="Session history">
-        <h2 className="section-title mb-4">History</h2>
+      <section aria-label="Session history" data-reveal>
+        <p className="overline">Log</p>
+        <h2 className="section-title mt-2 mb-5">History</h2>
         <ul className="flex flex-col gap-3">
           {reversed.map((log) => (
             <li key={log.id} className="card card-hover flex items-center justify-between gap-4 p-4">
               <div className="min-w-0">
-                <p className="truncate font-semibold text-text">{log.name}</p>
-                <p className="mt-0.5 text-xs text-muted">
+                <p className="truncate font-medium text-text">{log.name}</p>
+                <p className="mt-1 font-mono text-[0.6875rem] uppercase tracking-wide text-dim">
                   {new Date(log.finishedAt || log.startedAt).toLocaleDateString()}
                 </p>
-                <p className="mt-1 text-sm text-muted">
-                  {formatDuration(log.durationSec)} · {formatNumber(log.totalVolume)} {units} ·{' '}
-                  {log.totalSets} {log.totalSets === 1 ? 'set' : 'sets'}
+                <p className="mt-2 text-sm text-muted">
+                  <span className="metric text-text">{formatDuration(log.durationSec)}</span>
+                  <span className="text-dim"> · </span>
+                  <span className="metric text-text">{formatNumber(log.totalVolume)}</span> {units}
+                  <span className="text-dim"> · </span>
+                  <span className="metric text-text">{log.totalSets}</span>{' '}
+                  {log.totalSets === 1 ? 'set' : 'sets'}
                 </p>
               </div>
               <button
@@ -232,11 +256,8 @@ export default function Progress() {
           ))}
         </ul>
 
-        <div className="mt-6 flex justify-center">
-          <button
-            className="text-sm font-medium text-muted underline-offset-2 hover:text-danger hover:underline"
-            onClick={() => setConfirmClear(true)}
-          >
+        <div className="mt-8 flex justify-center">
+          <button className="btn btn-ghost btn-sm text-muted hover:text-danger" onClick={() => setConfirmClear(true)}>
             Clear all history
           </button>
         </div>

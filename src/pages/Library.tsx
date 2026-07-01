@@ -10,6 +10,7 @@ import ExerciseCard from '../components/ExerciseCard'
 import FilterPanel from '../components/FilterPanel'
 import EmptyState from '../components/EmptyState'
 import Modal from '../components/ui/Modal'
+import { useReveal } from '../lib/anim'
 
 const PAGE = 48
 
@@ -85,12 +86,16 @@ function LibraryInner() {
     writeParams({ query: '', bodyParts: [], equipment: [], targets: [] })
   }
 
+  const revealRef = useReveal<HTMLDivElement>()
+
   return (
-    <div className="page">
-      <header className="mb-5">
-        <h1 className="text-2xl font-bold sm:text-3xl">Exercise Library</h1>
-        <p className="mt-1 text-sm text-muted" aria-live="polite">
-          Showing {sorted.length.toLocaleString()} of {exercises.length.toLocaleString()} exercises
+    <div ref={revealRef} className="page-wide">
+      <header className="mb-8 border-b border-border pb-8" data-reveal>
+        <p className="overline">The library</p>
+        <h1 className="mt-3 font-display text-display-sm leading-[1.02]">Exercise Library</h1>
+        <p className="mt-3 font-mono text-xs uppercase tracking-wide text-muted" aria-live="polite">
+          {sorted.length.toLocaleString()}
+          <span className="text-dim"> / {exercises.length.toLocaleString()} exercises</span>
         </p>
       </header>
 

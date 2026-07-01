@@ -40,28 +40,31 @@ export default function Layout() {
     <div className="min-h-screen lg:flex">
       <a
         href="#main"
-        className="sr-only z-50 rounded-lg bg-primary px-4 py-2 font-semibold text-primary-fg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        className="sr-only z-50 rounded-lg bg-text px-4 py-2 font-semibold text-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
       >
         Skip to main content
       </a>
 
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface/60 px-3 py-5 backdrop-blur lg:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-bg/70 px-4 py-6 backdrop-blur-xl lg:flex">
         <Brand />
-        <nav aria-label="Primary" className="mt-8 flex flex-col gap-1">
+        <nav aria-label="Primary" className="mt-10 flex flex-col gap-0.5">
           {NAV.map((item) => (
             <SideLink key={item.to} item={item} />
           ))}
         </nav>
-        <div className="mt-auto px-3 pt-6 text-xs text-dim">
-          <p className="leading-relaxed">
-            Private by design — all data stays in your browser.
+        <div className="mt-auto border-t border-border pt-5">
+          <p className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-dim leading-relaxed">
+            Private by design
+          </p>
+          <p className="mt-1.5 text-xs leading-relaxed text-muted">
+            Everything stays in your browser. Nothing leaves this device.
           </p>
         </div>
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-bg/80 px-4 py-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-bg/80 px-5 py-3.5 backdrop-blur-xl lg:hidden">
         <Brand />
       </header>
 
@@ -72,7 +75,7 @@ export default function Layout() {
       {/* Mobile bottom nav */}
       <nav
         aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-border bg-surface/90 backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-border bg-bg/90 backdrop-blur-xl lg:hidden"
       >
         {NAV.map((item) => (
           <BottomLink key={item.to} item={item} />
@@ -84,11 +87,11 @@ export default function Layout() {
 
 function Brand() {
   return (
-    <NavLink to="/" className="flex items-center gap-2.5 px-2" aria-label="GetFit home">
-      <img src="/logo.svg" alt="" width={32} height={32} className="rounded-lg" />
-      <span className="font-display text-xl font-bold tracking-tight">
-        Get<span className="text-primary">Fit</span>
+    <NavLink to="/" className="flex items-center gap-2.5" aria-label="GetFit home">
+      <span className="grid h-8 w-8 place-items-center rounded-md bg-text font-display text-lg leading-none text-bg">
+        G
       </span>
+      <span className="font-display text-xl tracking-tight">GetFit</span>
     </NavLink>
   )
 }
@@ -101,16 +104,18 @@ function SideLink({ item }: { item: NavItem }) {
       end={item.end}
       className={({ isActive }) =>
         [
-          'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
-          isActive
-            ? 'bg-primary/15 text-primary'
-            : 'text-muted hover:bg-surface-2 hover:text-text',
+          'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition duration-200 ease-quint',
+          isActive ? 'bg-surface-2 text-text' : 'text-muted hover:bg-surface-2/60 hover:text-text',
         ].join(' ')
       }
     >
       {({ isActive }) => (
         <>
-          <Icon size={19} aria-hidden />
+          <Icon
+            size={18}
+            aria-hidden
+            className={isActive ? 'text-primary' : 'text-dim group-hover:text-muted'}
+          />
           <span>{item.label}</span>
           {isActive && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />}
         </>
@@ -127,13 +132,17 @@ function BottomLink({ item }: { item: NavItem }) {
       end={item.end}
       className={({ isActive }) =>
         [
-          'flex flex-col items-center gap-0.5 py-2 text-[0.625rem] font-medium transition',
-          isActive ? 'text-primary' : 'text-muted',
+          'flex flex-col items-center gap-1 py-2.5 text-[0.625rem] font-medium transition',
+          isActive ? 'text-text' : 'text-dim',
         ].join(' ')
       }
     >
-      <Icon size={20} aria-hidden />
-      <span>{item.label}</span>
+      {({ isActive }) => (
+        <>
+          <Icon size={20} aria-hidden className={isActive ? 'text-primary' : ''} />
+          <span>{item.label}</span>
+        </>
+      )}
     </NavLink>
   )
 }
